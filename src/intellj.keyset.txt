@@ -1,0 +1,26 @@
+command + shift + o = finding file
+command + click = move to clicked file
+command + option + arrow = move to previous/next point
+option + arrow = moving "word" units
+command + option + v = extract variable
+command + d = copy the line of codes
+command + p = checking parameter variables
+command + e = checking previous class
+control + d = recently run debugging run again
+control + shift + r = run the test you are seeing
+control + r = recently run test run again
+command + shift + enter = end current line and move to next line to start
+command + shift + t = create test class
+
+**** option + enter = import
+option + enter = create new method or modify
+
+*** control + space = autocomplete
+
+control + option + o = clean not used import
+command + / = make note
+command + backspace = delete line
+command + shift + arrow = move codes per unit
+option + shift + arrow = move codes per row
+control + enter = constructor, getter, setter, toString
+option + f7 = find places where using focused method
