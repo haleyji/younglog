@@ -11,7 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
+
 @SpringBootTest
 class PostServiceTest {
     @Autowired
@@ -51,10 +54,28 @@ class PostServiceTest {
         //when
 
         assertNotNull(response);
-        assertEquals("foo",response.getTitle());
-        assertEquals("foo",response.getContent());
+        assertEquals("foo", response.getTitle());
+        assertEquals("bar", response.getContent());
         //then
 
     }
 
+    @Transactional
+    @Test
+    @DisplayName("글 여러개 조회")
+    public void test3(){
+        postRespository.save(createPost("foo","bar"));
+        postRespository.save(createPost("man","doo"));
+
+        List<PostResponse> posts = postService.getAll();
+
+        assertEquals(2L, posts.size());
+    }
+
+    public Post createPost(String title, String content) {
+        return Post.builder()
+                .title(title)
+                .content(content)
+                .build();
+    }
 }

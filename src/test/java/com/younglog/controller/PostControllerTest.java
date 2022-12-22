@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -115,6 +116,35 @@ class PostControllerTest {
                 .andExpect(jsonPath("$.id").value(post.getId()))
                 .andExpect(jsonPath("$.title").value("foofoofooo"))
                 .andExpect(jsonPath("$.content").value("bar"))
+                .andDo(print());
+        //then
+
+
+    }
+
+    @Test
+    @DisplayName("글 여러개 조회")
+    public void test5() throws Exception {
+
+        Post post = Post.builder()
+                .title("foo")
+                .content("bar")
+                .build();
+        postRespository.save(post);
+
+        Post post2 = Post.builder()
+                .title("man")
+                .content("doo")
+                .build();
+        postRespository.save(post2);
+        //expect
+
+        mockMvc.perform(get("/posts/all",post.getId())
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(2)))
+                .andExpect(jsonPath("$[0].id").value(post.getId()))
+                .andExpect(jsonPath("$[0].content").value("bar"))
                 .andDo(print());
         //then
 

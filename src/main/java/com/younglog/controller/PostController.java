@@ -11,11 +11,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+
 public class PostController {
 //SSR -> jsp, thymeleaf, mustache, freemarker
 //SPA -> vue, nuxt(vue+SSR)
@@ -24,12 +26,12 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/posts")
-    public String get(){
+    public String get() {
         return "hello world";
     }
 
     @PostMapping("/posts")
-    public void post (@RequestBody @Valid PostCreate request){
+    public void post(@RequestBody @Valid PostCreate request) {
         //service -> repository
 
         //case 1. 저장한 데이터 entity,
@@ -45,4 +47,10 @@ public class PostController {
         PostResponse post = postService.get(id);
         return post;
     }
+
+    @GetMapping(value = "/posts/all",produces = "application/json;charset=utf-8;")
+    public List<PostResponse> getAll() {
+        return postService.getAll();
+    }
+
 }
