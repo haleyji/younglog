@@ -2,11 +2,14 @@ package com.younglog.controller;
 
 import com.younglog.domain.Post;
 import com.younglog.request.PostCreate;
+import com.younglog.request.PostSearch;
 import com.younglog.response.PostResponse;
 import com.younglog.service.PostService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,8 +52,8 @@ public class PostController {
     }
 
     @GetMapping(value = "/posts/all",produces = "application/json;charset=utf-8;")
-    public List<PostResponse> getAll() {
-        return postService.getAll();
+    public List<PostResponse> getAll(PostSearch postSearch) {
+        return postService.getAll(postSearch);
     }
 
 }

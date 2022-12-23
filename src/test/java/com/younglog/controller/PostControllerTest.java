@@ -2,27 +2,27 @@ package com.younglog.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.younglog.domain.Post;
-import com.younglog.repository.PostRespository;
+import com.younglog.repository.PostRepository;
 import com.younglog.request.PostCreate;
-import com.younglog.response.PostResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -36,11 +36,11 @@ class PostControllerTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private PostRespository postRespository;
+    private PostRepository postRepository;
 
     @BeforeEach
     void clean(){
-        postRespository.deleteAll();
+        //postRespository.deleteAll();
     }
 
     @Test
@@ -93,8 +93,8 @@ class PostControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print());
 
-        assertEquals(1L, postRespository.count());
-        Post post = postRespository.findAll().get(0);
+        assertEquals(1L, postRepository.count());
+        Post post = postRepository.findAll().get(0);
         assertEquals(post.getTitle(),"제목입니다");
     }
 
@@ -107,7 +107,7 @@ class PostControllerTest {
                 .title("foofoofooofoofooofoofooofooofooofoo")
                 .content("bar")
                 .build();
-        postRespository.save(post);
+        postRepository.save(post);
         //expect
 
         mockMvc.perform(get("/posts/{postId}",post.getId())
@@ -123,28 +123,52 @@ class PostControllerTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("글 여러개 조회")
     public void test5() throws Exception {
 
-        Post post = Post.builder()
-                .title("foo")
-                .content("bar")
-                .build();
-        postRespository.save(post);
-
-        Post post2 = Post.builder()
-                .title("man")
-                .content("doo")
-                .build();
-        postRespository.save(post2);
+        List<Post> requestPosts = IntStream.range(1, 31).mapToObj(i ->
+                        Post.builder()
+                                .title("younglog-"+i)
+                                .content("younglog contents-"+i)
+                                .build())
+                .collect(Collectors.toList());
+        postRepository.saveAll(requestPosts);
         //expect
 
-        mockMvc.perform(get("/posts/all",post.getId())
+        mockMvc.perform(get("/posts/all?page=1&size=10")
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(2)))
-                .andExpect(jsonPath("$[0].id").value(post.getId()))
-                .andExpect(jsonPath("$[0].content").value("bar"))
+                .andExpect(jsonPath("$.length()", is(10)))
+                .andExpect(jsonPath("$.[0].id", is(30)))
+                .andExpect(jsonPath("$.[0].title").value("younglog-30"))
+                .andExpect(jsonPath("$.[0].content").value("younglog contents-30"))
+                .andDo(print());
+        //then
+
+
+    }
+    @Test
+    @Transactional
+    @DisplayName("페이지를 0으로 요청하면 첫 페이지를 가져온다")
+    public void test6() throws Exception {
+
+        List<Post> requestPosts = IntStream.range(1, 31).mapToObj(i ->
+                        Post.builder()
+                                .title("younglog-"+i)
+                                .content("younglog contents-"+i)
+                                .build())
+                .collect(Collectors.toList());
+        postRepository.saveAll(requestPosts);
+        //expect
+
+        mockMvc.perform(get("/posts/all?page=0&size=10")
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(10)))
+                .andExpect(jsonPath("$.[0].id", is(30)))
+                .andExpect(jsonPath("$.[0].title").value("younglog-30"))
+                .andExpect(jsonPath("$.[0].content").value("younglog contents-30"))
                 .andDo(print());
         //then
 

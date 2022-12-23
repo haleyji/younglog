@@ -1,26 +1,33 @@
 package com.younglog.service;
 
 import com.younglog.domain.Post;
-import com.younglog.repository.PostRespository;
+import com.younglog.repository.PostRepository;
 import com.younglog.request.PostCreate;
+import com.younglog.request.PostSearch;
 import com.younglog.response.PostResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.data.domain.Sort.Direction.*;
 
 @SpringBootTest
 class PostServiceTest {
     @Autowired
     private PostService postService;
     @Autowired
-    private PostRespository postRespository;
+    private PostRepository postRepository;
 
     @Transactional
     @Test
@@ -35,7 +42,7 @@ class PostServiceTest {
 
         postService.write(postCreate);
 
-        Assertions.assertEquals(1L, postRespository.count());
+        Assertions.assertEquals(1L, postRepository.count());
 
     }
 
@@ -48,7 +55,7 @@ class PostServiceTest {
                 .title("foo")
                 .content("bar")
                 .build();
-        postRespository.save(post);
+        postRepository.save(post);
 
         PostResponse response = postService.get(post.getId());
         //when
@@ -60,16 +67,26 @@ class PostServiceTest {
 
     }
 
-    @Transactional
+
     @Test
+    @Transactional
     @DisplayName("글 여러개 조회")
     public void test3(){
-        postRespository.save(createPost("foo","bar"));
-        postRespository.save(createPost("man","doo"));
+        List<Post> requestPosts = IntStream.range(0, 20).mapToObj(i ->
+                Post.builder()
+                    .title("younglog-"+i)
+                    .content("younglog contents-"+i)
+                    .build())
+                .collect(Collectors.toList());
 
-        List<PostResponse> posts = postService.getAll();
+        postRepository.saveAll(requestPosts);
 
-        assertEquals(2L, posts.size());
+        PostSearch postSearch = PostSearch.builder().page(1).build();
+        //sql -> select, limit, offset
+        List<PostResponse> posts = postService.getAll(postSearch);
+
+        assertEquals(10L, posts.size());
+        assertEquals("younglog-19",posts.get(0).getTitle());
     }
 
     public Post createPost(String title, String content) {
