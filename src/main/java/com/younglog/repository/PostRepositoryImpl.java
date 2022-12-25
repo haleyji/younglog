@@ -5,12 +5,14 @@ import com.younglog.domain.Post;
 import com.younglog.domain.QPost;
 import com.younglog.request.PostSearch;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static com.younglog.domain.QPost.*;
 
 @RequiredArgsConstructor
+
 public class PostRepositoryImpl implements PostRepositoryCustom{
 
     private final JPAQueryFactory jpaQueryFactory;

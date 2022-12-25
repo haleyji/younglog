@@ -1,8 +1,11 @@
 package com.younglog.controller;
 
+import com.younglog.exception.PostNotFound;
+import com.younglog.exception.YounglogException;
 import com.younglog.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -27,4 +30,21 @@ public class ExceptionController {
         }
         return response;
     }
+    @ResponseBody
+    @ExceptionHandler(YounglogException.class)
+    public ResponseEntity<ErrorResponse> younglogException(YounglogException e) {
+
+        int statusCode = e.statusCode();
+        ErrorResponse response = ErrorResponse.builder()
+                .code(String.valueOf(statusCode))
+                .message(e.getMessage())
+                .build();
+
+        return ResponseEntity.status(statusCode)
+                .body(response);
+
+    }
+
+    //service 가 커질때마다 exception case 도 늘어남
+
 }

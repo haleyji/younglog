@@ -1,8 +1,11 @@
 package com.younglog.service;
 
 import com.younglog.domain.Post;
+import com.younglog.domain.PostEditor;
+import com.younglog.exception.PostNotFound;
 import com.younglog.repository.PostRepository;
 import com.younglog.request.PostCreate;
+import com.younglog.request.PostEdit;
 import com.younglog.request.PostSearch;
 import com.younglog.response.PostResponse;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +40,7 @@ public class PostService {
     }
 
     public PostResponse get(Long id) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다"));
+        Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFound());
 
         return PostResponse.builder()
                 .id(post.getId())
@@ -55,5 +58,22 @@ public class PostService {
         return postRepository.getList(postSearch)
                 .stream().map(PostResponse::new)
                 .collect(Collectors.toList());
+    }
+
+    public void edit(Long id, PostEdit postEdit) {
+        Post post = postRepository.findById(id).orElseThrow(PostNotFound::new);
+//        post.setTitle(postEdit.getTitle());
+//        post.setContent(postEdit.getContent());
+        PostEditor.PostEditorBuilder postEditorBuilder = post.toEditor();
+
+
+        PostEditor postEditor = postEditorBuilder.title(postEdit.getTitle()).content(postEdit.getContent()).build();
+
+        post.edit(postEditor);
+    }
+
+    public void delete(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(PostNotFound::new);
+        postRepository.delete(post);
     }
 }
