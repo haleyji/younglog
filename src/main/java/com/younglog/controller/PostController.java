@@ -38,9 +38,10 @@ public class PostController {
     @PostMapping("/posts")
     public void post(@RequestBody @Valid PostCreate request) {
         //service -> repository
-        if (request.getTitle().contains("바보")) {
-            throw new InvalidRequest();
-        }
+//        if (request.getTitle().contains("바보")) {
+//            throw new InvalidRequest();
+//        }
+        request.validate();
             //case 1. 저장한 데이터 entity,
             //case 2. 저장한 데이터 primary_id -> client 에서는 수신한 id 를 가지고 글 조회 API 를 통해서 데이터를 수신받음
             //case 3. 응답 필요 없음

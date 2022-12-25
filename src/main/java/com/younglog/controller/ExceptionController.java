@@ -1,5 +1,6 @@
 package com.younglog.controller;
 
+import com.younglog.exception.InvalidRequest;
 import com.younglog.exception.PostNotFound;
 import com.younglog.exception.YounglogException;
 import com.younglog.response.ErrorResponse;
@@ -38,8 +39,16 @@ public class ExceptionController {
         ErrorResponse response = ErrorResponse.builder()
                 .code(String.valueOf(statusCode))
                 .message(e.getMessage())
+                .validation(e.getValidation())
                 .build();
 
+//        if (e instanceof InvalidRequest) {
+//            InvalidRequest invalidRequest = (InvalidRequest) e;
+//            String fieldName = invalidRequest.getFieldName();
+//            String message = invalidRequest.getMessage();
+//            response.addValidation(fieldName, message);
+//        }
+        //validation -> title : 제목에 바보를 포함할 수 없습니다
         return ResponseEntity.status(statusCode)
                 .body(response);
 
