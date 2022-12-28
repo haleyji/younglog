@@ -1,0 +1,17 @@
+= younglog api
+:toc:
+
+== 글 단건 조회
+
+=== curl
+
+include::{snippets}/index/curl-request.adoc[]
+
+=== request
+
+include::{snippets}/index/http-request.adoc[]
+
+=== response
+
+include::{snippets}/index/http-response.adoc[]
+
