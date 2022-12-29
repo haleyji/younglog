@@ -1,5 +1,6 @@
 package com.younglog.controller;
 
+import com.younglog.config.data.UserSession;
 import com.younglog.domain.Post;
 import com.younglog.exception.InvalidRequest;
 import com.younglog.request.PostCreate;
@@ -16,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +32,17 @@ public class PostController {
 //    -> react, next
 
     private final PostService postService;
+
+    @GetMapping("/foo")
+    public Long foo(UserSession userSession) {
+        return userSession.id;
+    }
+
+    @GetMapping("/bar")
+    public String bar() {
+
+        return "인증이 필요없는 페이지";
+    }
 
     @GetMapping("/posts")
     public String get() {
