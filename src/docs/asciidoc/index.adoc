@@ -1,17 +1,56 @@
 = younglog api
-:toc:
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
 
 == 글 단건 조회
 
 === curl
 
-include::{snippets}/index/curl-request.adoc[]
+include::{snippets}/post-inquiry/curl-request.adoc[]
 
-=== request
+=== 요청
 
-include::{snippets}/index/http-request.adoc[]
+include::{snippets}/post-inquiry/http-request.adoc[]
 
-=== response
+==== request parameter
 
-include::{snippets}/index/http-response.adoc[]
+include::{snippets}/post-inquiry/path-parameters.adoc[]
+
+=== 응답
+
+include::{snippets}/post-inquiry/http-response.adoc[]
+
+==== response field
+
+include::{snippets}/post-inquiry/response-fields.adoc[]
+
+
+
+== 글 작성
+
+=== curl
+
+include::{snippets}/post-create/curl-request.adoc[]
+
+=== 요청
+
+include::{snippets}/post-create/http-request.adoc[]
+
+==== request fields
+
+include::{snippets}/post-create/request-body.adoc[]
+
+include::{snippets}/post-create/request-fields.adoc[]
+
+=== 응답
+
+include::{snippets}/post-create/http-response.adoc[]
+
+==== response field
+
+include::{snippets}/post-create/response-fields.adoc[]
 
