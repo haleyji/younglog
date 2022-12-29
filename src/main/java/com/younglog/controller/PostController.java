@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,18 +36,21 @@ public class PostController {
         return "hello world";
     }
 
-    @PostMapping("/posts")
-    public void post(@RequestBody @Valid PostCreate request) {
+    @PostMapping(value = "/posts")
+    public void post(@RequestBody @Valid PostCreate request, @RequestHeader String authorization) {
+       if(authorization.equals("younglog")){
+           request.validate();
+           postService.write(request);
+
+       }
         //service -> repository
 //        if (request.getTitle().contains("바보")) {
 //            throw new InvalidRequest();
 //        }
-        request.validate();
-            //case 1. 저장한 데이터 entity,
-            //case 2. 저장한 데이터 primary_id -> client 에서는 수신한 id 를 가지고 글 조회 API 를 통해서 데이터를 수신받음
-            //case 3. 응답 필요 없음
-            //Bad case: 서버에서 응답은 이렇게 할거다 라고 fix 해버리는 경우 (서버에서는 유연하게 대응하는 것이 좋다)
-            postService.write(request);
+        //case 1. 저장한 데이터 entity,
+        //case 2. 저장한 데이터 primary_id -> client 에서는 수신한 id 를 가지고 글 조회 API 를 통해서 데이터를 수신받음
+        //case 3. 응답 필요 없음
+        //Bad case: 서버에서 응답은 이렇게 할거다 라고 fix 해버리는 경우 (서버에서는 유연하게 대응하는 것이 좋다)
 
         //return Map.of("postId",postId)
     }

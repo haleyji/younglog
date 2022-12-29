@@ -46,24 +46,6 @@ class PostControllerTest {
 
     @Test
     @Transactional
-    @DisplayName("/posts 요청시 hello world를 출력한다.")
-    void test() throws Exception {
-        PostCreate request = PostCreate.builder()
-                .title("제목입니다")
-                .content("내용입니다")
-                .build();
-
-        String json = objectMapper.writeValueAsString(request);
-        mockMvc.perform(get("/posts")
-                        .contentType(APPLICATION_JSON)
-                        .content(json))
-                .andExpect(status().isOk())
-                .andExpect(content().string("hello world"))
-                .andDo(print());
-    }
-
-    @Test
-    @Transactional
     @DisplayName("/posts 요청시 title 값은 필수다")
     void test2() throws Exception {
         PostCreate request = PostCreate.builder()
@@ -94,7 +76,8 @@ class PostControllerTest {
         String json = objectMapper.writeValueAsString(request);
         mockMvc.perform(post("/posts")
                         .contentType(APPLICATION_JSON)
-                        .content(json))
+                        .content(json)
+                        .header("authorization","younglog"))
                 .andExpect(status().isOk())
                 .andDo(print());
 
