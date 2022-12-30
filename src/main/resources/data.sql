@@ -1,0 +1,1 @@
+INSERT INTO `user_info` (name, email, password, created_at) VALUES ('haley', 'cherish920810@gmail.com', '1234', '2022-12-30 09:00:00')

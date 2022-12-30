@@ -8,10 +8,6 @@ public class Unauthorized extends YounglogException{
         super(MESSAGE);
     }
 
-    public Unauthorized(Throwable cause) {
-        super(MESSAGE, cause);
-    }
-
     @Override
     public int statusCode() {
         return 401;

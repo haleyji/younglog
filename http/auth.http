@@ -1,0 +1,19 @@
+### 로그인 요청
+
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "email" : "cherish920810@gmail.com",
+  "password" : "1234"
+
+}
+
+
+### 인증페이지 요청
+GET http://localhost:8080/foo
+content-Type: application/json
+Cookie: SESSION=e7d25f11-1624-46a1-9c23-4f244e640b8c
+
+### 인증 필요없는 페이지
+GET http://localhost:8080/bar
